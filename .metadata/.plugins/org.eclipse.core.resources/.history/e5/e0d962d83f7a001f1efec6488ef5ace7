@@ -1,0 +1,67 @@
+package com.example.bookkeeping.service;
+
+import com.example.bookkeeping.model.Invoice;
+import com.example.bookkeeping.model.Transaction;
+import com.example.bookkeeping.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Calendar;
+import java.util.Date;
+
+@Service
+public class TransactionService {
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private InvoiceService invoiceService;
+    
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
+
+    public Optional<Transaction> getTransactionById(String id) {
+        return transactionRepository.findById(id);
+    }
+
+    // New method for double-entry transactions
+    public void createDoubleEntryTransaction(Transaction debitTransaction, Transaction creditTransaction) {
+        if (debitTransaction.getAmount().compareTo(creditTransaction.getAmount()) != 0) {
+            throw new IllegalArgumentException("Debit and Credit amounts must be equal");
+        }
+        debitTransaction.setType(Transaction.TransactionType.DEBIT);
+        creditTransaction.setType(Transaction.TransactionType.CREDIT);
+        transactionRepository.save(debitTransaction);
+        transactionRepository.save(creditTransaction);
+        
+        // Create an invoice based on the debit transaction
+        Invoice invoice = new Invoice();
+        invoice.setCustomerId(debitTransaction.getAccount()); // Assuming account holds the customer ID
+        invoice.setAmount(debitTransaction.getAmount());
+        invoice.setInvoiceDate(new Date());
+        invoice.setStatus("UNPAID");
+        invoice.setDescription(debitTransaction.getDescription());
+        
+     // Set the invoice due date to 30 days from the invoice date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date()); // Current date
+        calendar.add(Calendar.DAY_OF_MONTH, 30); // Add 30 days for Net 30
+        invoice.setDueDate(calendar.getTime());
+
+        // Create the invoice
+        invoiceService.createInvoice(invoice);
+
+    }
+
+    public Transaction updateTransaction(String id, Transaction transaction) {
+        transaction.setTransactionId(id);
+        return transactionRepository.save(transaction);
+    }
+
+    public void deleteTransaction(String id) {
+        transactionRepository.deleteById(id);
+    }
+}

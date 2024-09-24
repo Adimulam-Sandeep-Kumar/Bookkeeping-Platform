@@ -1,0 +1,28 @@
+package com.example.bookkeeping.service;
+
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class CurrencyConversionService {
+
+    // Mock exchange rates (should be fetched from a real API in production)
+    private static final Map<String, Double> exchangeRates = new HashMap<>();
+    
+    static {
+        exchangeRates.put("USD", 1.0);
+        exchangeRates.put("EUR", 1.1);
+        exchangeRates.put("INR", 0.013);
+    }
+
+    public double convertToUSD(String currency, double amount) {
+        double rate = exchangeRates.getOrDefault(currency, 1.0);
+        return amount * rate;
+    }
+
+    public double getExchangeRate(String currency) {
+        return exchangeRates.getOrDefault(currency, 1.0);
+    }
+}

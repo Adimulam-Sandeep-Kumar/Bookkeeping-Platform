@@ -1,0 +1,18 @@
+package com.example.bookkeeping.controller;
+
+import com.example.bookkeeping.service.FinancialReportService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/reports")
+public class FinancialReportController {
+
+    @Autowired
+    private FinancialReportService financialReportService;
+
+    @GetMapping("/income-statement")
+    public double getIncomeStatement() {
+        return financialReportService.getIncomeStatement();
+    }
+}

@@ -1,0 +1,26 @@
+package com.example.bookkeeping.model;
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+
+@Data
+@Document(collection = "financial_transactions")
+public class Transaction {
+    @Id
+    private String id;
+    private String date;
+    private String description;
+    private List<Entry> entries;
+    private String createdBy;
+    private String updatedAt;
+
+    @Data
+    public static class Entry {
+        private String account;
+        private String type; // debit or credit
+        private double amount;
+        private String currency;
+    }
+}

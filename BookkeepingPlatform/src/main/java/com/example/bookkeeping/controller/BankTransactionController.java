@@ -1,0 +1,47 @@
+package com.example.bookkeeping.controller;
+
+import com.example.bookkeeping.model.BankTransaction;
+import com.example.bookkeeping.service.BankTransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/bank-transactions")
+public class BankTransactionController {
+    @Autowired
+    private BankTransactionService bankTransactionService;
+
+    @GetMapping
+    public ResponseEntity<List<BankTransaction>> getAllBankTransactions() {
+        return ResponseEntity.ok(bankTransactionService.getAllBankTransactions());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BankTransaction> getBankTransactionById(@PathVariable String id) {
+        return bankTransactionService.getBankTransactionById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<BankTransaction> createBankTransaction(@RequestBody BankTransaction bankTransaction) {
+        return new ResponseEntity<>(bankTransactionService.createBankTransaction(bankTransaction), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBankTransaction(@PathVariable String id) {
+        bankTransactionService.deleteBankTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    @PostMapping("/reconcile")
+    public ResponseEntity<Void> reconcileBankTransactions() {
+        bankTransactionService.reconcileTransactions();
+        return ResponseEntity.ok().build();
+    }
+
+}

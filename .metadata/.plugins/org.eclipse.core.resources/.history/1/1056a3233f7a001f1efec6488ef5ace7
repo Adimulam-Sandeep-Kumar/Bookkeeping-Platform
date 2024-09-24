@@ -1,0 +1,21 @@
+package com.yourpackage.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+@Document(collection = "invoices")
+public class Invoice {
+    @Id
+    private String invoiceId;
+    private String customerId;
+    private BigDecimal amount;
+    private Date invoiceDate;
+    private Date dueDate;
+    private String status; // e.g., "PAID", "UNPAID", "OVERDUE"
+    private String description;
+
+    // Getters and Setters
+}

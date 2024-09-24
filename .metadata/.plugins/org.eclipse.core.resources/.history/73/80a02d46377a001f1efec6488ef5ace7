@@ -1,0 +1,30 @@
+package com.example.bookkeeping.model;
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+
+@Data
+@Document(collection = "financial_transactions")
+public class Transaction {
+    @Id
+    private String id;
+    private String date;
+    private String description;
+    private List<Entry> entries;
+    private String createdBy;
+    private String updatedAt;
+
+    @Data
+    public static class Entry {
+        private String account;
+        private String type; // debit or credit
+        private double amount;
+        private String currency;
+        private double exchangeRate; // New field for currency conversion
+        private double convertedAmount; // Amount converted to a default currency (e.g., USD)
+        private boolean reconciled = false; // New field to track reconciliation status
+    }
+
+}

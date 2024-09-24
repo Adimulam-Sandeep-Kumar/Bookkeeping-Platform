@@ -1,0 +1,49 @@
+package com.example.bookkeeping.service;
+
+import com.example.bookkeeping.model.ProfitLossReport;
+import com.example.bookkeeping.model.BalanceSheetReport;
+import com.example.bookkeeping.model.Transaction;
+import com.example.bookkeeping.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Service
+public class ReportingService {
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    public ProfitLossReport generateProfitLossReport() {
+        List<Transaction> transactions = transactionRepository.findAll();
+        BigDecimal totalIncome = BigDecimal.ZERO;
+        BigDecimal totalExpenses = BigDecimal.ZERO;
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getType() == Transaction.TransactionType.CREDIT) {
+                totalIncome = totalIncome.add(transaction.getAmount());
+            } else if (transaction.getType() == Transaction.TransactionType.DEBIT) {
+                totalExpenses = totalExpenses.add(transaction.getAmount());
+            }
+        }
+
+        ProfitLossReport report = new ProfitLossReport();
+        report.setTotalIncome(totalIncome);
+        report.setTotalExpenses(totalExpenses);
+        report.setNetProfitLoss(totalIncome.subtract(totalExpenses));
+        return report;
+    }
+
+    public BalanceSheetReport generateBalanceSheetReport() {
+        // Implement logic to calculate total assets, liabilities, and equity
+        // This logic will depend on your specific accounting setup
+
+        BalanceSheetReport report = new BalanceSheetReport();
+        // For example purposes, we'll set dummy values
+        report.setTotalAssets(new BigDecimal("10000"));
+        report.setTotalLiabilities(new BigDecimal("5000"));
+        report.setEquity(report.getTotalAssets().subtract(report.getTotalLiabilities()));
+        return report;
+    }
+}

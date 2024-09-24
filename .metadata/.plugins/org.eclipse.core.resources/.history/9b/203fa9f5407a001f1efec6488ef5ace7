@@ -1,0 +1,29 @@
+package com.example.bookkeeping.controller;
+
+import com.yourpackage.bookkeeping.model.ProfitLossReport;
+import com.yourpackage.bookkeeping.model.BalanceSheetReport;
+import com.yourpackage.bookkeeping.service.ReportingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/reports")
+public class ReportingController {
+    @Autowired
+    private ReportingService reportingService;
+
+    @GetMapping("/profit-loss")
+    public ResponseEntity<ProfitLossReport> getProfitLossReport() {
+        ProfitLossReport report = reportingService.generateProfitLossReport();
+        return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/balance-sheet")
+    public ResponseEntity<BalanceSheetReport> getBalanceSheetReport() {
+        BalanceSheetReport report = reportingService.generateBalanceSheetReport();
+        return ResponseEntity.ok(report);
+    }
+}

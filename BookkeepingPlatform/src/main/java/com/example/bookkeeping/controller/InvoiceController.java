@@ -1,0 +1,45 @@
+package com.example.bookkeeping.controller;
+
+import com.example.bookkeeping.model.Invoice;
+import com.example.bookkeeping.service.InvoiceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/invoices")
+public class InvoiceController {
+    @Autowired
+    private InvoiceService invoiceService;
+
+    @GetMapping
+    public ResponseEntity<List<Invoice>> getAllInvoices() {
+        return ResponseEntity.ok(invoiceService.getAllInvoices());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Invoice> getInvoiceById(@PathVariable String id) {
+        return invoiceService.getInvoiceById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
+        return new ResponseEntity<>(invoiceService.createInvoice(invoice), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Invoice> updateInvoice(@PathVariable String id, @RequestBody Invoice invoice) {
+        return ResponseEntity.ok(invoiceService.updateInvoice(id, invoice));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInvoice(@PathVariable String id) {
+        invoiceService.deleteInvoice(id);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,0 +1,30 @@
+package com.example.bookkeeping.controller;
+
+import com.yourpackage.bookkeeping.model.Budget;
+import com.yourpackage.bookkeeping.service.BudgetService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/budgets")
+public class BudgetController {
+    @Autowired
+    private BudgetService budgetService;
+
+    @PostMapping
+    public ResponseEntity<Budget> createBudget(@RequestBody Budget budget) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(budgetService.createBudget(budget));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Budget> updateBudget(@PathVariable String id, @RequestParam BigDecimal amountUsed) {
+        return ResponseEntity.ok(budgetService.updateBudget(id, amountUsed));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Budget> getBudget(@PathVariable String id) {
+        return ResponseEntity.ok(budgetService.getBudget(id));
+    }
+}

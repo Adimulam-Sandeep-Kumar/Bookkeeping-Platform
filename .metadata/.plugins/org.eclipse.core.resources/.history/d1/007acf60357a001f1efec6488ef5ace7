@@ -1,0 +1,59 @@
+package com.example.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+import java.util.List;
+
+@Document(collection = "invoices")
+public class Invoice {
+    @Id
+    private String id;
+    private String invoiceNumber;
+    private Date invoiceDate;
+    private String customerId;
+    private List<InvoiceItem> items;
+    private Double totalAmount;
+    private String currency;
+    private String status; // e.g., Pending, Paid, Overdue
+    private String createdBy;
+
+    // Constructors
+    public Invoice() {}
+
+    public Invoice(String invoiceNumber, Date invoiceDate, String customerId, List<InvoiceItem> items,
+                   Double totalAmount, String currency, String status, String createdBy) {
+        this.invoiceNumber = invoiceNumber;
+        this.invoiceDate = invoiceDate;
+        this.customerId = customerId;
+        this.items = items;
+        this.totalAmount = totalAmount;
+        this.currency = currency;
+        this.status = status;
+        this.createdBy = createdBy;
+    }
+
+    // Getters and Setters
+    // ...
+}
+
+class InvoiceItem {
+    private String description;
+    private Integer quantity;
+    private Double unitPrice;
+    private Double total;
+
+    // Constructors
+    public InvoiceItem() {}
+
+    public InvoiceItem(String description, Integer quantity, Double unitPrice) {
+        this.description = description;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.total = quantity * unitPrice;
+    }
+
+    // Getters and Setters
+    // ...
+}

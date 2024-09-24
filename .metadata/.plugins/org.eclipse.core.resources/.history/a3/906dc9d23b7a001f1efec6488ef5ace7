@@ -1,0 +1,17 @@
+package com.example.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+
+@Document(collection = "auditTrail")
+public class AuditTrail {
+    @Id
+    private String changeId;
+    private String userId;
+    private Date date;
+    private String changeDetails;
+
+    // Getters and Setters
+}

@@ -1,0 +1,40 @@
+package com.example.bookkeeping.service;
+
+import com.example.bookkeeping.model.Transaction;
+import com.example.bookkeeping.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class TransactionService {
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private CurrencyConversionService currencyConversionService;
+
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
+    }
+
+    public Transaction createTransaction(Transaction transaction) {
+        // Convert amounts to default currency (e.g., USD)
+        transaction.getEntries().forEach(entry -> {
+            double exchangeRate = currencyConversionService.getExchangeRate(entry.getCurrency());
+            entry.setExchangeRate(exchangeRate);
+            entry.setConvertedAmount(currencyConversionService.convertToUSD(entry.getCurrency(), entry.getAmount()));
+        });
+        return transactionRepository.save(transaction);
+    }
+    
+    public Transaction reconcileTransaction(String id) {
+        Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new RuntimeException("Transaction not found"));
+        transaction.setReconciled(true);
+        return transactionRepository.save(transaction);
+    }
+
+    
+}

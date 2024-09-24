@@ -1,0 +1,85 @@
+package com.example.bookkeeping.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.bookkeeping.model.Transaction;
+import com.example.bookkeeping.service.TransactionService;
+
+@RestController
+@RequestMapping("/api/transactions")
+public class TransactionController {
+    @Autowired
+    private TransactionService transactionService;
+
+    @GetMapping
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        return ResponseEntity.ok(transactionService.getAllTransactions());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Transaction> getTransactionById(@PathVariable String id) {
+        return transactionService.getTransactionById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/double-entry") // New endpoint for double-entry
+    public ResponseEntity<Void> createDoubleEntryTransaction(@RequestBody DoubleEntryRequest request) {
+        Transaction debitTransaction = request.getDebit();
+        Transaction creditTransaction = request.getCredit();
+        transactionService.createDoubleEntryTransaction(debitTransaction, creditTransaction);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable String id, @RequestBody Transaction transaction) {
+        return ResponseEntity.ok(transactionService.updateTransaction(id, transaction));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable String id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Inner class for double entry request
+    public static class DoubleEntryRequest {
+        private Transaction debit;
+        private Transaction credit;
+        
+        public Transaction getDebit() {
+            return debit;
+        }
+
+        public void setDebit(Transaction debit) {
+            this.debit = debit;
+        }
+
+        public Transaction getCredit() {
+            return credit;
+        }
+
+        public void setCredit(Transaction credit) {
+            this.credit = credit;
+        }
+    }
+    
+    @PostMapping
+    public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
+        transactionService.processTransaction(transaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transaction);
+    }
+
+}

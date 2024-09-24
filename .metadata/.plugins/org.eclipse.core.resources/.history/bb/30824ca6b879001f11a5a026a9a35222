@@ -1,0 +1,38 @@
+package com.yourcompany.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+
+@Document(collection = "transactions")
+public class Transaction {
+    @Id
+    private String id;
+    private String transactionId;
+    private Date date;
+    private String description;
+    private String debitAccountId;
+    private String creditAccountId;
+    private Double amount;
+    private String currency;
+    private String createdBy;
+
+    // Constructors
+    public Transaction() {}
+
+    public Transaction(String transactionId, Date date, String description, String debitAccountId,
+                       String creditAccountId, Double amount, String currency, String createdBy) {
+        this.transactionId = transactionId;
+        this.date = date;
+        this.description = description;
+        this.debitAccountId = debitAccountId;
+        this.creditAccountId = creditAccountId;
+        this.amount = amount;
+        this.currency = currency;
+        this.createdBy = createdBy;
+    }
+
+    // Getters and Setters
+    // ...
+}

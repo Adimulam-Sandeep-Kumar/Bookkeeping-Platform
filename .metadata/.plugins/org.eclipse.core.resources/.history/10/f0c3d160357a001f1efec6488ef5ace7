@@ -1,0 +1,37 @@
+package com.example.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "accounts")
+public class Account {
+    @Id
+    private String id;
+    private String accountNumber;
+    private String accountName;
+    private AccountType accountType;
+    private Double balance;
+    private String currency;
+
+    // Constructors
+    public Account() {}
+
+    public Account(String accountNumber, String accountName, AccountType accountType, Double balance, String currency) {
+        this.accountNumber = accountNumber;
+        this.accountName = accountName;
+        this.accountType = accountType;
+        this.balance = balance;
+        this.currency = currency;
+    }
+
+    // Getters and Setters
+    // ...
+}
+
+enum AccountType {
+    ASSET,
+    LIABILITY,
+    EQUITY,
+    REVENUE,
+    EXPENSE
+}

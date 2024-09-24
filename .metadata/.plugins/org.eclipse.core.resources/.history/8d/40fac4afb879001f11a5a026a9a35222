@@ -1,0 +1,36 @@
+package com.yourcompany.bookkeeping.model;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+
+@Document(collection = "budgets")
+public class Budget {
+    @Id
+    private String id;
+    private String budgetId;
+    private String accountId;
+    private Double allocatedAmount;
+    private Double spentAmount;
+    private Date startDate;
+    private Date endDate;
+    private String createdBy;
+
+    // Constructors
+    public Budget() {}
+
+    public Budget(String budgetId, String accountId, Double allocatedAmount, Date startDate,
+                  Date endDate, String createdBy) {
+        this.budgetId = budgetId;
+        this.accountId = accountId;
+        this.allocatedAmount = allocatedAmount;
+        this.spentAmount = 0.0;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.createdBy = createdBy;
+    }
+
+    // Getters and Setters
+    // ...
+}

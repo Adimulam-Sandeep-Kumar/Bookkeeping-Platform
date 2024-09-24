@@ -1,0 +1,8 @@
+package com.example.bookkeeping.repository;
+
+import com.example.bookkeeping.model.Customer;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface CustomerRepository extends MongoRepository<Customer, String> {
+    // Custom query methods can be added here if needed
+}
