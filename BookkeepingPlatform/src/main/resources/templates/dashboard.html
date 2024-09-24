@@ -6,10 +6,14 @@
 </head>
 <body>
     <h2>Financial Dashboard</h2>
+    <p th:text="'Total Income: ' + ${report.totalIncome}"></p>
+    <p th:text="'Total Expenses: ' + ${report.totalExpenses}"></p>
+    
+    <!-- Chart rendering -->
     <canvas id="myChart"></canvas>
     <script>
         const ctx = document.getElementById('myChart').getContext('2d');
-        const chartData = /*[[${report}]]*/ {}; // Thymeleaf variable
+        const chartData = /*[[${report}]]*/ {}; // Thymeleaf variable for dynamic data
 
         const myChart = new Chart(ctx, {
             type: 'bar',
