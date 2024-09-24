@@ -36,14 +36,37 @@ public class ReportingService {
     }
 
     public BalanceSheetReport generateBalanceSheetReport() {
-        // Implement logic to calculate total assets, liabilities, and equity
-        // This logic will depend on your specific accounting setup
+        // Fetch all transactions
+        List<Transaction> transactions = transactionRepository.findAll();
+        BigDecimal totalAssets = BigDecimal.ZERO;
+        BigDecimal totalLiabilities = BigDecimal.ZERO;
 
+        // Iterate through transactions to calculate total assets and liabilities
+        for (Transaction transaction : transactions) {
+            // Assuming "Cash" and "Accounts Receivable" are considered assets
+            if (transaction.getAccount().equals("Cash") || transaction.getAccount().equals("Accounts Receivable")) {
+                if (transaction.getType() == Transaction.TransactionType.CREDIT) {
+                    totalAssets = totalAssets.add(transaction.getAmount());
+                } else if (transaction.getType() == Transaction.TransactionType.DEBIT) {
+                    totalAssets = totalAssets.subtract(transaction.getAmount());
+                }
+            }
+
+            // Assuming "Accounts Payable" and "Loans" are considered liabilities
+            if (transaction.getAccount().equals("Accounts Payable") || transaction.getAccount().equals("Loans")) {
+                if (transaction.getType() == Transaction.TransactionType.CREDIT) {
+                    totalLiabilities = totalLiabilities.add(transaction.getAmount());
+                } else if (transaction.getType() == Transaction.TransactionType.DEBIT) {
+                    totalLiabilities = totalLiabilities.subtract(transaction.getAmount());
+                }
+            }
+        }
+
+        // Create Balance Sheet report
         BalanceSheetReport report = new BalanceSheetReport();
-        // For example purposes, we'll set dummy values
-        report.setTotalAssets(new BigDecimal("10000"));
-        report.setTotalLiabilities(new BigDecimal("5000"));
-        report.setEquity(report.getTotalAssets().subtract(report.getTotalLiabilities()));
+        report.setTotalAssets(totalAssets);
+        report.setTotalLiabilities(totalLiabilities);
+        report.setEquity(totalAssets.subtract(totalLiabilities)); // Equity = Assets - Liabilities
         return report;
     }
 }

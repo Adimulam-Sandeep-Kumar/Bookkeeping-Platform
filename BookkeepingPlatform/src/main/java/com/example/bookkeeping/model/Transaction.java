@@ -21,7 +21,10 @@ public class Transaction {
     private TransactionType type; // New: to distinguish debit/credit
 
     public enum TransactionType {
-        DEBIT, CREDIT
+        CREDIT,
+        DEBIT,
+        EXPENSE, // Add this line
+        INCOME;  // Add this line
     }
 
     // Getters and Setters
